@@ -1,0 +1,12 @@
+1. help
+3. opdir
+4. exdir
+5. del
+6. copy
+7. cut
+8. paste
+9. info
+10. run
+11. tree
+12. rename
+13. size
