@@ -15,7 +15,7 @@ public class Folder extends Element implements FolderInterface {
     public Folder() {
         path = Paths.get("").toAbsolutePath();
     }
-    Folder (Path path) {
+    public Folder(Path path) {
         if (path == null) {
             throw new NullPointerException("Path cannot be null");
         }
@@ -83,13 +83,13 @@ public class Folder extends Element implements FolderInterface {
         try {
             Files.walkFileTree(path, new SimpleFileVisitor<>() {
                 @Override
-                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs){
                     children.add(new Folder(dir));
                     return FileVisitResult.CONTINUE;
                 }
 
                 @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
                     children.add(new File(file));
                     return FileVisitResult.CONTINUE;
                 }
@@ -113,7 +113,30 @@ public class Folder extends Element implements FolderInterface {
     }
 
     @Override
+    public Optional<Element> contains(Path name) {
+        var newPath = path.resolve(name);
+        try {
+            return Files.exists(newPath) ? Optional.of(ElementFactory.get(newPath)) : Optional.empty();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public Folder getChildrenFolder(String name) throws IOException {
+        var newPath = path.resolve(name);
+        var element = contains(name);
+        if (element.isPresent() && element.get().getClass().equals(Folder.class)) {
+            return new Folder(newPath);
+        }
+        if (element.isPresent() && element.get().getClass().equals(File.class)){
+            throw new IOException("Can not open a file.");
+        }
+        throw new FileNotFoundException(newPath + " not found");
+    }
+
+    @Override
+    public Folder getChildrenFolder(Path name) throws IOException {
         var newPath = path.resolve(name);
         var element = contains(name);
         if (element.isPresent() && element.get().getClass().equals(Folder.class)) {

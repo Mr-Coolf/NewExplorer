@@ -5,6 +5,7 @@ import ExplorerLogic.Elements.File;
 import ExplorerLogic.Elements.Folder;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -31,7 +32,19 @@ public class Explorer {
         return root.contains(name).isPresent();
     }
 
-    public void openFolder(String name) throws IOException {
+    public void openAbsolutePathFolder (Path path) throws IOException {
+        if (Files.exists(path) && Files.isDirectory(path)) {
+            root = new Folder(path);
+        } else {
+            throw new IOException(String.format("No folder exist at specified path: \"%s\"", path.toAbsolutePath()));
+        }
+    }
+
+    public void openChildrenFolder(String name) throws IOException {
+        root = root.getChildrenFolder(name);
+    }
+
+    public void openChildrenFolder(Path name) throws IOException {
         root = root.getChildrenFolder(name);
     }
 

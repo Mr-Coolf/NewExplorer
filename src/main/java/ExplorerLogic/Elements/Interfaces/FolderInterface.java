@@ -5,6 +5,7 @@ import ExplorerLogic.Elements.File;
 import ExplorerLogic.Elements.Folder;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +17,7 @@ public interface FolderInterface {
      * @see #getChildrenFiles()
      * @see #getChildren()
      */
-    public List<Folder> getChildrenFolders();
+    List<Folder> getChildrenFolders();
 
     /**
      *
@@ -24,7 +25,7 @@ public interface FolderInterface {
      * @see #getChildrenFolders()
      * @see #getChildren()
      */
-    public List<File> getChildrenFiles();
+    List<File> getChildrenFiles();
 
     /**
      *
@@ -32,7 +33,7 @@ public interface FolderInterface {
      * @see #getChildrenFolders()
      * @see #getChildrenFiles()
      */
-    public List<Element> getChildren();
+    List<Element> getChildren();
 
     /**
      *
@@ -40,7 +41,15 @@ public interface FolderInterface {
      * @return <code>Optional &lt;Element&gt;</code> returns an element if it exists and an empty optional if it does not
      *
      */
-    public Optional<Element> contains(String name);
+    Optional<Element> contains(String name);
+
+    /**
+     *
+     * @param name first child file/folder name of this folder
+     * @return <code>Optional &lt;Element&gt;</code> returns an element if it exists and an empty optional if it does not
+     *
+     */
+    Optional<Element> contains(Path name);
 
     /**
      *
@@ -48,11 +57,19 @@ public interface FolderInterface {
      * @return new <code>Folder</code> object by the
      * @throws IOException if path doesn't exist or path doesn't lead to a folder
      */
-    public Folder getChildrenFolder(String name) throws IOException;
+    Folder getChildrenFolder(String name) throws IOException;
+
+    /**
+     *
+     * @param name first child folder or relative path to new folder from this folder
+     * @return new <code>Folder</code> object by the
+     * @throws IOException if path doesn't exist or path doesn't lead to a folder
+     */
+    Folder getChildrenFolder(Path name) throws IOException;
 
 //    /**
 //     *
 //     * @return new parent <code>Folder</code>
 //     */
-//    public Folder exitFolder();
+//    Folder exitFolder();
 }

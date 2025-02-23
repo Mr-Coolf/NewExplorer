@@ -4,11 +4,13 @@ import Display.ConsoleDisplay.Commands.CommandType;
 import Display.ConsoleDisplay.Commands.Command;
 import Display.ConsoleDisplay.Commands.IO.Printer;
 import Display.ConsoleDisplay.Commands.IO.Reader;
+import ExplorerLogic.Explorer;
 
 public class ConsoleDisplay implements Runnable{
     public static final String RUN_ARGUMENT = "console";
     public static Printer printer;
     public static Reader reader;
+    public static Explorer explorer = new Explorer();
 
     @Override
     public void run() {
@@ -24,7 +26,6 @@ public class ConsoleDisplay implements Runnable{
     }
 
     public void introduction() {
-        printer.println( String.format("Welcome to Explorer v%s!\n"
-                          + "Enter \"%s\" to see the available commands\n", Constants.ID, Command.help.name()), CommandType.info);
+        printer.println( CommandType.info, String.format("Welcome to Explorer v%s!",  Constants.ID), String.format("Enter \"%s\" to see the available commands\n", Command.help.name()) );
     }
 }

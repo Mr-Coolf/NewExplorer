@@ -3,10 +3,12 @@ package Display.ConsoleDisplay.Commands;
 import Display.ConsoleDisplay.Commands.Exceptions.IllegalArgumentException;
 import Display.ConsoleDisplay.Commands.Exceptions.IllegalCommandException;
 
+import java.io.IOException;
 import java.util.*;
 
 import static Display.ConsoleDisplay.Commands.Arguments.*;
 import static Display.ConsoleDisplay.ConsoleDisplay.printer;
+import static Display.ConsoleDisplay.ConsoleDisplay.explorer;
 
 public enum Command {
     help (
@@ -22,18 +24,21 @@ public enum Command {
             var args = Arguments.getArguments(s);
             areArgumentsSupported(args);
 
+            printer.println("");
+
             if (args.contains(argumentsHelp)) {
                 var arguments = Arguments.values();
                 var list = new ArrayList<String>();
                 for (var arg : arguments) {
-                    list.add(String.format("%s: %s", arg.command, arg.description)); //TODO change second todo arg to description
+                    list.add(String.format("%s: %s", arg.command, arg.description));
                 }
                 printer.println(list, CommandType.info);
             } else {
                 var commands = Command.values();
                 var list = new ArrayList<String>();
                 for (var command : commands) {
-                    for (var info: command.commandInfo) list.add(info);
+                    list.addAll(List.of(command.commandInfo));
+//                    list.add("\n");
                 }
                 printer.println(list, CommandType.info);
             }
@@ -50,6 +55,23 @@ public enum Command {
         public void run(String s) {
             var args = Arguments.getArguments(s);
             areArgumentsSupported(args);
+
+            if (args.contains(path)) {
+                try {
+                    if (pathArgument.path.isAbsolute())
+                        explorer.openAbsolutePathFolder(pathArgument.path);
+                    else
+                        explorer.openChildrenFolder(pathArgument.path);
+                }
+                catch (IOException e) {
+                    printer.println(e.getMessage(), CommandType.error);
+                    return;
+                }
+            }
+
+            if (args.contains(doPrint)) {
+                
+            }
         }
     },
     exdir (
@@ -150,6 +172,22 @@ public enum Command {
         @Override
         public void run(String s) {
 
+        }
+    },
+    stop (
+            new String[] {
+                    String.format("%s -> stops the program.", "stop"),
+            },
+            dontPrint
+    ) {
+        @Override
+        public void run(String s) {
+            var args = Arguments.getArguments(s);
+            areArgumentsSupported(args);
+            if (!args.contains(dontPrint)) {
+                printer.println("May the 4th be with you!", CommandType.info);
+            }
+            System.exit(0);
         }
     };
 
