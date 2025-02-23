@@ -10,62 +10,66 @@ import java.nio.file.Path;
 import java.util.List;
 
 public class Explorer {
-    private Folder root;
+    private Folder currentFolder;
 
     public Explorer() {
-        root = new Folder();
+        currentFolder = new Folder();
     }
 
     public List<Folder> getChildrenFolders() {
-        return root.getChildrenFolders();
+        return currentFolder.getChildrenFolders();
     }
 
     public List<File> getChildrenFiles() {
-        return root.getChildrenFiles();
+        return currentFolder.getChildrenFiles();
     }
 
     public List<Element> getChildren() {
-        return root.getChildren();
+        return currentFolder.getChildren();
     }
 
     public boolean contains(String name) {
-        return root.contains(name).isPresent();
+        return currentFolder.contains(name).isPresent();
     }
 
     public void openAbsolutePathFolder (Path path) throws IOException {
         if (Files.exists(path) && Files.isDirectory(path)) {
-            root = new Folder(path);
+            currentFolder = new Folder(path);
         } else {
             throw new IOException(String.format("No folder exist at specified path: \"%s\"", path.toAbsolutePath()));
         }
     }
 
     public void openChildrenFolder(String name) throws IOException {
-        root = root.getChildrenFolder(name);
+        currentFolder = currentFolder.getChildrenFolder(name);
     }
 
     public void openChildrenFolder(Path name) throws IOException {
-        root = root.getChildrenFolder(name);
+        currentFolder = currentFolder.getChildrenFolder(name);
     }
 
     public void exitFolder() {
-        root = getParent();
+        currentFolder = getParent();
     }
 
     public Path getPath() {
-        return root.getPath();
+        return currentFolder.getPath();
     }
 
     public String getName() {
-        return root.getName();
+        return currentFolder.getName();
     }
 
     public Folder getRoot() {
-        return root.getRootFolder();
+        return currentFolder.getRootFolder();
     }
 
     public Folder getParent() {
-        return root.getParentFolder();
+        return currentFolder.getParentFolder();
+    }
+
+    public Folder getCurrentFolder() {
+        return new Folder(currentFolder.getPath());
     }
 
 }

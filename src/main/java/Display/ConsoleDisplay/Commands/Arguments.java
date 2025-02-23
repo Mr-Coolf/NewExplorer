@@ -2,6 +2,8 @@ package Display.ConsoleDisplay.Commands;
 
 import Display.ConsoleDisplay.Commands.Exceptions.IllegalArgumentException;
 
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -9,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static Constants.Constants.ARGUMENT_PREFIX;
+import static Display.ConsoleDisplay.ConsoleDisplay.explorer;
 
 public enum Arguments {
     argumentsHelp(
@@ -54,6 +57,8 @@ public enum Arguments {
     };
 
     public static PathArgument pathArgument = null;
+    public static PathArgument copiedPath = null;
+    public static boolean deleteAfterPaste = false;
 
     public final String command;
     public final String description;
@@ -71,7 +76,7 @@ public enum Arguments {
             if (s.toLowerCase().startsWith(arg.command)){
 
                 if (arg.equals(Arguments.path)) {
-                    pathArgument = new PathArgument(s.substring(s.indexOf(path.command) + path.command.length()));
+                    pathArgument = new PathArgument(s.substring(s.indexOf(path.command) + path.command.length() + 1));
                 }
 
                 return arg;
@@ -85,9 +90,9 @@ public enum Arguments {
         var res = new ArrayList<Arguments>();
 
         if (s.contains(ARGUMENT_PREFIX)) {
-            var s1 = s.substring(s.indexOf(ARGUMENT_PREFIX)).toLowerCase();
+            var s1 = s.substring(s.indexOf(ARGUMENT_PREFIX));
             do {
-                var s2 = s1.substring(s1.indexOf(ARGUMENT_PREFIX) + 1);
+                var s2 = s1.substring(s1.indexOf(ARGUMENT_PREFIX) + 1).toLowerCase();
 
                 if (s2.contains(ARGUMENT_PREFIX)) {
                     s1 = s1.substring(0, s2.indexOf(ARGUMENT_PREFIX));
@@ -110,6 +115,22 @@ class PathArgument {
     Path path;
 
     public PathArgument(String path) {
-        this.path = Paths.get(path);
+        var newPath = Paths.get(path);
+        if (newPath.isAbsolute()) {
+            this.path = newPath;
+        } else {
+            if (path.startsWith("./")) {
+                path = path.substring(2);
+            }
+            var curPath = explorer.getCurrentFolder().getPath();
+            this.path = curPath.resolve(Paths.get(path));
+        }
+
+        this.path = this.path.normalize();
+
+        if (!Files.exists(this.path)) {
+            throw new RuntimeException(String.format("Specified path \"%s\" doesn't exist", this.path));
+        }
+
     }
 }

@@ -16,4 +16,15 @@ public interface ElementInterface {
     public Folder getRootFolder();
 
     public Folder getParentFolder();
+
+    /**
+     *
+     * @return int - finds element size
+     */
+    long getSize();
+
+    /**
+     * Deletes current element
+     */
+    void delete();
 }

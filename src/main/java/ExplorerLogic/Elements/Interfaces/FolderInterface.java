@@ -29,6 +29,14 @@ public interface FolderInterface {
 
     /**
      *
+     * @return <code>List &lt;Element&gt;</code> with all the children of the current folder
+     * @see #getChildrenFolders()
+     * @see #getChildrenFiles()
+     */
+    List<Element> getAllChildren();
+
+    /**
+     *
      * @return <code>List &lt;Element&gt;</code> with all the first children folders of the current folder
      * @see #getChildrenFolders()
      * @see #getChildrenFiles()

@@ -7,6 +7,7 @@ public enum CommandType {
     warning ("[WARNING]", Ansi.Color.YELLOW),
     error ("[ERROR]", Ansi.Color.RED),
     info ("[INFO]", Ansi.Color.GREEN),
+    result ("[RESULT]", Ansi.Color.GREEN),
     progress ("[PROGRESS]", Ansi.Color.CYAN),
     input ("[INPUT]", Ansi.Color.MAGENTA);
 

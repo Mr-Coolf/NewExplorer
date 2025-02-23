@@ -1,12 +1,15 @@
 package ExplorerLogic.Elements;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class File extends Element {
-    Path path;
 
-    File(Path path) {
-        this.path = path;
+    public File(Path path) {
+        this.path = path.toAbsolutePath();
     }
+
+
 
 }

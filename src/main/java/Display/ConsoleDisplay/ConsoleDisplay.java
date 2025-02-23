@@ -6,6 +6,8 @@ import Display.ConsoleDisplay.Commands.IO.Printer;
 import Display.ConsoleDisplay.Commands.IO.Reader;
 import ExplorerLogic.Explorer;
 
+import java.io.IOException;
+
 public class ConsoleDisplay implements Runnable{
     public static final String RUN_ARGUMENT = "console";
     public static Printer printer;
@@ -19,9 +21,15 @@ public class ConsoleDisplay implements Runnable{
         introduction();
 
         while(true){
+            printer.println( explorer.getPath().toString() , CommandType.info);
             var s = reader.readLine("Write your command");
-            var command = Command.getCommand(s);
-            command.run(s);
+            try {
+                var command = Command.getCommand(s);
+                command.run(s);
+            } catch (Exception e) {
+                printer.println(e.getMessage() + "\n", CommandType.error);
+            }
+            System.gc();
         }
     }
 
