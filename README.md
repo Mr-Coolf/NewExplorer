@@ -2,6 +2,10 @@
 
 ---
 
+### Minimum java version: 21
+
+---
+
 # How to run:
 
 - If you want to have a console view then run this:
